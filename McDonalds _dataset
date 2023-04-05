@@ -1,0 +1,113 @@
+import pandas as pd
+
+mcdonalds = pd.read_csv("https://raw.githubusercontent.com/alexeygrigorev/datasets/main/AB_NYC_2019.csv")
+
+# Rename the columns
+mcdonalds.columns = ["yummy", "convenient", "spicy", "fattening", "greasy", "fast", "cheap", "tasty",
+                     "expensive", "healthy", "disgusting", "Like", "Age", "VisitFrequency", "Gender"]
+
+# Print the dimensions of the data
+print(mcdonalds.shape)
+
+# Print the first three rows
+print(mcdonalds.head(3))
+
+MD_x = np.array(mcdonalds.iloc[:, :11])
+
+# Convert "Yes" values to 1 and "No" values to 0
+MD_x = (MD_x == "Yes") + 0
+
+# Compute the column means and round to 2 decimal places
+col_means = np.round(np.mean(MD_x, axis=0), 2)
+
+# Print the column means
+print(col_means)
+
+MD_pca = PCA().fit(MD_x)
+
+# Print the summary of the PCA
+print("Proportion of Variance Explained:\n", MD_pca.explained_variance_ratio_)
+print("\nPCA Components:\n", MD_pca.components_)
+print("\nMean of the Variables:\n", MD_x.mean())
+
+# Print the PCA object
+print(pd.DataFrame(MD_pca.components_).round(1))
+
+plt.scatter(scores[:, 0], scores[:, 1], c=kmeans.labels_, cmap='viridis', alpha=0.5)
+plt.colorbar()
+for k in k_range:
+    kmeans = KMeans(n_clusters=k, n_init=10, random_state=42)
+    kmeans.fit(MD_x)
+    score = silhouette_score(MD_x, kmeans.labels_)
+    silhouette_scores.append(score)
+
+# Find the optimal number of clusters based on the highest silhouette score
+n_clusters = silhouette_scores.index(max(silhouette_scores)) + 2
+
+# Perform clustering with the optimal number of clusters
+kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=42)
+kmeans.fit(MD_x)
+
+# Plot the clustering results
+plt.plot(k_range, silhouette_scores, 'bx-')
+plt.xlabel('Number of clusters')
+plt.ylabel('Silhouette Score')
+plt.title('Silhouette Score for k-means clustering')
+plt.show()
+
+# Plot the final clustering results
+plt.scatter(scores[:, 0], scores[:, 1], c=kmeans.labels_, cmap='viridis', alpha=0.5)
+plt.colorbar()
+
+# Plot the projection axes
+for length, vector in zip(MD_pca.explained_variance_, MD_pca.components_):
+    v = vector * 3 * np.sqrt(length)
+    plt.plot([0, v[0]], [0, v[1]], '-k', lw=2)
+    
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+plt.title("Clustering of McDonald's survey data")
+plt.show()
+
+plt.hist(MD.x[cluster_labels == 4, "yummy"], bins=10, range=(0,1))
+
+# setting the x-axis label
+plt.xlabel("yummy")
+
+# displaying the plot
+plt.show()
+
+from flexmix import FLXMCmvbinary, stepFlexmix
+
+np.random.seed(1234)
+
+MD_m28 = stepFlexmix(formula="MD.x ~ 1", k=range(2, 9), nrep=10, model=FLXMCmvbinary(), verbose=False)
+
+print(MD_m28)
+
+MD_vclust = dendrogram(linkage(np.transpose(MD_x), method='ward'), no_plot=True)
+MD_vclust_order = MD_vclust['leaves'][::-1]
+
+MD_barchart_data = barchart(data=MD_k4, main='MD.k4', ylab='count', shade=True, which=MD_vclust_order)
+plt.show()
+
+like = mcdonalds.groupby(k4)["Like.n"].mean()
+print(like)
+# compute visit frequency mean by segment
+visit = pd.DataFrame(mcdonalds.groupby(k4)['VisitFrequency'].mean())
+
+# compute Like.n mean by segment
+like = pd.DataFrame(mcdonalds.groupby(k4)['Like.n'].mean())
+
+# compute proportion of females by segment
+female = pd.DataFrame(mcdonalds.groupby(k4)['Gender'].apply(lambda x: np.mean(x == "Female")))
+
+# plot the means and proportion of females by segment
+plt.scatter(visit, like, s=10 * female, alpha=0.5)
+plt.xlim([2, 4.5])
+plt.ylim([-3, 3])
+plt.xlabel("Visit Frequency")
+plt.ylabel("Like")
+for i in range(1, 5):
+    plt.text(visit.iloc[i-1], like.iloc[i-1], i)
+plt.show()
